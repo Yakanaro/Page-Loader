@@ -1,46 +1,100 @@
 import axios from 'axios';
 import { promises as fs } from 'fs';
 import path from 'path';
-import os from 'os';
-import generateFileName from '../src/build-name.js';
+import * as cheerio from 'cheerio';
+import prettier from 'prettier';
 
-// const dirName = '/Users/sergej/backend-project-lvl3/src';
-
-const getFolderName = (link, baseURL) => {
-  const url = new URL(link, baseURL);
-  const folderName = `${url.hostname}${url.pathname}`.replace(/[./]/g, '-');
-  return folderName;
+const getStringNameFromURL = (url, ending) => {
+  const { hostname, pathname } = new URL(url);
+  const { dir, name } = path.parse(pathname);
+  const urlString = `${hostname}${dir}/${name}`;
+  const regex = /\W/gm;
+  const outputName = urlString.replace(regex, '-').concat(ending);
+  return outputName;
 };
 
-// const generateFolderName = (link = 'https://ru.hexlet.io/courses') => {
-//   const { hostname, pathname } = new URL(link);
-//   const raw = `${hostname}${pathname}`;
-//   const target = raw
-//     .replace(/[^a-zA-Z0-9]/g, ' ')
-//     .trim()
-//     .replace(/\s/g, '-');
-//   console.log(`${target}_files`);
-// };
-
-// const pageData = (url, outpitDir) =>
-//   axios.get(url).then((content) => {
-//     const srcDirPath = path.join(outpitDir, `${getFolderName(url)}_files`);
-//     const fileName = generateFileName(url);
-//     // const dirName = `${outpitDir}/${fileName}.html`;
-//     console.log(path.join(srcDirPath, fileName));
-//     return fs.writeFile(path.join(srcDirPath, fileName), content.data);
-//   });
-
-// export default pageData;
+const parse = (data) => {
+  const mapping = {
+    img: 'src',
+  };
+  const $ = cheerio.load(data);
+  const links = [];
+  $(Object.keys(mapping)).each((i, tagName) => {
+    links.push(
+      $('html')
+        .find(tagName)
+        .map((j, el) => $(el).attr(mapping[tagName]))
+        .get()
+    );
+  });
+  return links.flat();
+};
 
 const pageData = (url, outputDir) => {
-  const srcDirPath = path.join(outputDir);
-  const fileName = generateFileName(url);
-  const getData = axios.get(url).then((content) => {
-    console.log(path.join(srcDirPath, fileName));
-    return fs.writeFile(path.join(srcDirPath, fileName), content.data);
+  const fileName = getStringNameFromURL(url, '.html');
+  const dirName = getStringNameFromURL(url, '_files');
+  let html;
+  let links;
+  let images;
+
+  return axios
+    .get(url)
+    .then((res) => {
+      html = res.data;
+      links = parse(html);
+      return html;
+    })
+    .then((data) => fs.appendFile(path.resolve(outputDir, fileName), data))
+    .then(() => fs.mkdir(path.resolve(outputDir, dirName)))
+    .then(() => downloadImages(links, url))
+    .then((imgPath) =>
+      Promise.all(
+        imgPath.map((image) => {
+          const imagePath = getStringNameFromURL(image.config.url, path.extname(image.config.url));
+          return fs.appendFile(path.resolve(outputDir, dirName, imagePath), image.data);
+        })
+      )
+    )
+    .then(() => fs.readdir(path.resolve(outputDir, dirName)))
+    .then((imageData) => {
+      images = imageData.map((pathImage) => `${dirName}/${pathImage}`);
+    })
+    .then(() => {
+      const htmlUpdate = updateHTML(html, images);
+      html = prettier.format(htmlUpdate, { parser: 'html' });
+      return fs.writeFile(path.resolve(outputDir, fileName), html);
+    });
+};
+
+const downloadImages = (links, url) => {
+  const promises = links.map((link) => {
+    if (link.startsWith('https:')) {
+      const config = axios({
+        method: 'get',
+        url: `${link}`,
+        responseType: 'stream',
+      });
+      return config;
+    } else {
+      const config = axios({
+        method: 'get',
+        url: `${url}${link}`,
+        responseType: 'stream',
+      });
+      return config;
+    }
   });
-  return getData;
+  return Promise.all(promises).catch((err) => console.error(err));
+};
+
+const updateHTML = (html, data) => {
+  const $ = cheerio.load(html);
+  $('html')
+    .find('img')
+    .map(function (index) {
+      return $(this).attr('src', data[index]);
+    });
+  return $.html();
 };
 
 export default pageData;

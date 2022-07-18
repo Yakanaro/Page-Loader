@@ -15,3 +15,13 @@ const generateFileName = (link) => {
 };
 
 export default generateFileName;
+
+// export const generateFolderName = (link) => {
+//   const { hostname, pathname } = new URL(link);
+//   const raw = `${hostname}${pathname}`;
+//   const target = raw
+//     .replace(/[^a-zA-Z0-9]/g, ' ')
+//     .trim()
+//     .replace(/\s/g, '-');
+//   return `${target}_files`;
+// };
