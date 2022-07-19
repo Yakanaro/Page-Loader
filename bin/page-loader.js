@@ -15,3 +15,18 @@ program
     pageData(url, outputPath);
   });
 program.parse(process.argv);
+
+// program
+//   .version('1.0.0')
+//   .description('Load page.')
+//   .option('-o, --output <pathToFolder>', 'folder', process.cwd())
+//   .arguments('<address>')
+//   .action((address) =>
+//     pageData(program.output, address)
+//       .then(() => console.log('files have been created successfully'))
+//       .catch((error) => {
+//         console.error(error.message);
+//         process.exit(1);
+//       })
+//   )
+//   .parse(process.argv);
