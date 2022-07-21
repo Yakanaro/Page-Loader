@@ -1,22 +1,19 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
-import pageData from '../src/pageload.js';
+import pageLoader from '../src/pageload.js';
 
 const program = new Command();
 
 program
-  .version('1.0.0')
+  .version('0.1.0')
   .arguments('<url>')
-  .description('Page loader utility')
-  .option('-o, --output [dir]', 'output dir', process.cwd())
-  .action((url, options) => {
-    const outputPath = options.output;
-    pageData(url, outputPath)
-      .then(() => console.log('files have been created successfully'))
-      .catch((err) => {
-        console.error(err.message);
-        process.exit(1);
-      });
+  .description('web pages downloader')
+  .option('-o, --output [type]', 'destination', process.cwd())
+  .action((url) => {
+    pageLoader(url, program.output).catch((err) => {
+      console.error(err.message);
+      process.exit(1);
+    });
   });
 program.parse(process.argv);
