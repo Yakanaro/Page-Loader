@@ -72,7 +72,7 @@ export const getAbsoluteUrls = (links, url) => {
 export const downloadResources = (links, resourcesPath) => {
   log('downloading resources');
   return fs.mkdir(resourcesPath).then(() => {
-    links.forEach((link) => {
+    links.map((link) => {
       new Listr(
         [
           {
@@ -83,7 +83,8 @@ export const downloadResources = (links, resourcesPath) => {
                 url: link,
                 responseType: 'arraybuffer',
               }).then((data) => {
-                return fs.writeFile(path.join(resourcesPath, getFilename(link)), data.data);
+                const src = Promise.all([data]);
+                return src.then((content) => content.map((source) => fs.writeFile(path.join(resourcesPath, getFilename(link)), source.data)));
               }),
           },
         ],

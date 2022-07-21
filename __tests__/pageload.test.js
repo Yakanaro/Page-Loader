@@ -16,7 +16,7 @@ let image;
 beforeEach(async () => {
   distPath = await fs.mkdtemp(path.join(os.tmpdir(), 'page-loader-'));
   expected = await fs.readFile(getFixturePath('expect.html'), 'utf-8');
-  // image = await fs.readFile(getFixturePath('img.svg'), 'utf-8');
+  image = await fs.readFile(getFixturePath('img.svg'), 'utf-8');
 });
 
 test('HTML-page with resources', async () => {
@@ -29,7 +29,7 @@ test('HTML-page with resources', async () => {
   expect(scope.isDone()).toBe(true);
   expect(page.isFile()).toBe(true);
   expect(resourcesFolder.isDirectory()).toBe(true);
-  // expect(downloadedImg.isFile()).toBe(true);
+  expect(downloadedImg.isFile()).toBe(true);
 });
 
 test('Should generate 404 error', async () => {
