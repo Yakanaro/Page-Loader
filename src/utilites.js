@@ -4,6 +4,7 @@ import path from 'path';
 import * as cheerio from 'cheerio';
 import debug from 'debug';
 import axiosDebug from 'axios-debug-log';
+import Listr from 'listr';
 
 axiosDebug({
   request(deb, config) {
@@ -72,11 +73,24 @@ export const downloadResources = (links, resourcesPath) => {
   log('downloading resources');
   return fs.mkdir(resourcesPath).then(() => {
     links.forEach((link) => {
-      axios({
-        method: 'get',
-        url: link,
-        responseType: 'arraybuffer',
-      }).then((data) => fs.writeFile(path.join(resourcesPath, getFilename(link)), data.data));
+      new Listr(
+        [
+          {
+            title: `Downloading ${link}`,
+            task: () =>
+              axios({
+                method: 'get',
+                url: link,
+                responseType: 'arraybuffer',
+              }).then((data) => {
+                return fs.writeFile(path.join(resourcesPath, getFilename(link)), data.data);
+              }),
+          },
+        ],
+        { concurrent: true, exitOnError: false }
+      )
+        .run()
+        .catch((error) => ({ result: 'error', error }));
     });
   });
 };

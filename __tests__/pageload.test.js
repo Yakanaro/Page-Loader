@@ -18,16 +18,13 @@ beforeEach(async () => {
   expected = await fs.readFile(getFixturePath('expect.html'), 'utf-8');
   // image = await fs.readFile(getFixturePath('img.svg'), 'utf-8');
 });
-beforeAll(async () => {
-  image = await fs.readFile(getFixturePath('img.svg'), 'utf-8');
-});
 
 test('HTML-page with resources', async () => {
   const scope = nock('https://ru.hexlet.io').get('/my').reply(200, expected).get('/img.svg').reply(200, image);
   await pageLoader('https://ru.hexlet.io/my', distPath);
   const page = await fs.lstat(path.join(distPath, 'ru-hexlet-io-my.html'));
   const resourcesFolder = await fs.lstat(path.join(distPath, 'ru-hexlet-io-my_files'));
-  // const downloadedImg = await fs.lstat(path.join(distPath, 'ru-hexlet-io-my_files', 'img.svg'));
+  const downloadedImg = await fs.lstat(path.join(distPath, 'ru-hexlet-io-my_files', 'img.svg'));
 
   expect(scope.isDone()).toBe(true);
   expect(page.isFile()).toBe(true);
