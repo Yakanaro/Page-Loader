@@ -10,3 +10,5 @@
 - Clone this repository
 - Next, enter the command **`make install`**
 - For help run **`page-loader -h`**
+
+## Example

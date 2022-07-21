@@ -72,26 +72,19 @@ export const getAbsoluteUrls = (links, url) => {
 export const downloadResources = (links, resourcesPath) => {
   log('downloading resources');
   return fs.mkdir(resourcesPath).then(() => {
-    links.map((link) => {
-      new Listr(
-        [
-          {
-            title: `Downloading ${link}`,
-            task: () =>
-              axios({
-                method: 'get',
-                url: link,
-                responseType: 'arraybuffer',
-              }).then((data) => {
-                const src = Promise.all([data]);
-                return src.then((content) => content.map((source) => fs.writeFile(path.join(resourcesPath, getFilename(link)), source.data)));
-              }),
-          },
-        ],
-        { concurrent: true, exitOnError: false }
-      )
-        .run()
-        .catch((error) => ({ result: 'error', error }));
+    const promises = links.map((link) => {
+      return {
+        title: `Downloading ${link}`,
+        task: () =>
+          axios({
+            method: 'get',
+            url: link,
+            responseType: 'arraybuffer',
+          }).then((data) => {
+            return fs.writeFile(path.join(resourcesPath, getFilename(link)), data.data);
+          }),
+      };
     });
+    return new Listr(promises, { concurrent: true, exitOnError: false }).run().catch((error) => ({ result: 'error', error }));
   });
 };
