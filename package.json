@@ -4,7 +4,7 @@
   "type": "module",
   "description": "[![Actions Status](https://github.com/Yakanaro/backend-project-lvl3/workflows/hexlet-check/badge.svg)](https://github.com/Yakanaro/backend-project-lvl3/actions)",
   "bin": {
-    "page-loader": "bin/page-loader.js"
+    "page-loader": "dist/bin/page-loader.js"
   },
   "main": "index.js",
   "scripts": {
