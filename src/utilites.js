@@ -15,7 +15,7 @@ axiosDebug({
   },
 });
 
-const log = debug('page-loader:utils');
+const log = debug('page-loader');
 
 const tags = {
   script: 'src',
