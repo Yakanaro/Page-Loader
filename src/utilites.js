@@ -68,7 +68,7 @@ export const getLinksAndChangeHtml = (html, url) => {
     $(tag).each((i, el) => {
       const link = $(el).attr(tags[tag]);
       if (link && checkLocalLink(link, url)) {
-        $(el).attr(`${tags[tag]}`, `${path.join(getFilesDirectoryPath(url), getFilename(link))}`);
+        $(el).attr(`${tags[tag]}`, `${path.join(getFilesDirectoryPath(url), getFileName(link))}`);
         links.push(link);
       }
     })
