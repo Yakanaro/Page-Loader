@@ -5,6 +5,7 @@ import * as cheerio from 'cheerio';
 import debug from 'debug';
 import axiosDebug from 'axios-debug-log';
 import Listr from 'listr';
+import url from 'url';
 
 axiosDebug({
   request(deb, config) {
@@ -44,7 +45,12 @@ export const getFilename = (url) => {
     .split('/')
     .filter((el) => el !== '')
     .join('-');
-  return filename === '' ? 'index.html' : filename;
+  return filename === '' ? 'index.html' : createFileName(url) + filename;
+};
+
+export const makeFileName = (address) => {
+  const addUrl = url.parse(address);
+  return `${addUrl.host}${addUrl.path}`.replace(/\W/g, '-');
 };
 
 export const downloadHtml = (url, htmlPath) => axios.get(url).then((response) => fs.writeFile(htmlPath, response.data, 'utf-8'));
