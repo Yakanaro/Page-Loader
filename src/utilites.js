@@ -45,7 +45,7 @@ export const getFilename = (url) => {
     .split('/')
     .filter((el) => el !== '')
     .join('-');
-  return filename === '' ? 'index.html' : createFileName(url) + filename;
+  return filename === '' ? 'index.html' : filename;
 };
 
 export const makeFileName = (address) => {
