@@ -32,16 +32,6 @@ export const createFileName = (url) => {
   return parts;
 };
 
-const getFileName = (link) => {
-  const myUrl = new URL(link);
-  const fileName = link
-    .replace(`${myUrl.protocol}//`, '')
-    .replace(/\.\w+$/, '')
-    .replace(/[^a-z0-9]/gi, '-');
-  const format = path.extname(link);
-  return `${fileName}${format}`;
-};
-
 export const checkLocalLink = (link, url) => {
   const originalHost = new URL(url).origin;
   return new URL(link, originalHost).origin === originalHost;
@@ -49,13 +39,15 @@ export const checkLocalLink = (link, url) => {
 
 export const getFilesDirectoryPath = (url) => `${createFileName(url)}_files`;
 
-export const getFilename = (url) => {
-  const { pathname } = new URL(url, 'https://example.com');
+const genResourceName = (url) => url.replace(/[^a-zA-Z0-9]/g, '-');
+
+export const getFilename = (resUrl, baseUrl) => {
+  const { pathname } = new URL(resUrl, 'https://example.com');
   const filename = pathname
     .split('/')
     .filter((el) => el !== '')
     .join('-');
-  return filename === '' ? 'index.html' : filename;
+  return filename === '' ? 'index.html' : `${createFileName(baseUrl)}-${filename}`;
 };
 
 export const downloadHtml = (url, htmlPath) => axios.get(url).then((response) => fs.writeFile(htmlPath, response.data, 'utf-8'));
@@ -68,7 +60,7 @@ export const getLinksAndChangeHtml = (html, url) => {
     $(tag).each((i, el) => {
       const link = $(el).attr(tags[tag]);
       if (link && checkLocalLink(link, url)) {
-        $(el).attr(`${tags[tag]}`, `${path.join(getFilesDirectoryPath(url), getFileName(link))}`);
+        $(el).attr(`${tags[tag]}`, `${path.join(getFilesDirectoryPath(url), getFilename(link, url))}`);
         links.push(link);
       }
     })
@@ -92,7 +84,8 @@ export const downloadResources = (links, resourcesPath, url) => {
             url: link,
             responseType: 'arraybuffer',
           }).then((data) => {
-            return fs.writeFile(path.join(resourcesPath, getFileName(link)), data.data);
+            console.log(data.filename);
+            return fs.writeFile(path.join(resourcesPath, getFilename(link, url)), data.data);
           }),
       };
     });
