@@ -55,12 +55,13 @@ export const downloadHtml = (url, htmlPath) => axios.get(url).then((response) =>
 export const getLinksAndChangeHtml = (html, url) => {
   log('parsing html for local links and transforming HTML-page');
   const links = [];
+  const baseUrl = createFileName(url);
   const $ = cheerio.load(html);
   Object.keys(tags).map((tag) =>
     $(tag).each((i, el) => {
       const link = $(el).attr(tags[tag]);
       if (link && checkLocalLink(link, url)) {
-        $(el).attr(`${tags[tag]}`, `${path.join(getFilesDirectoryPath(url), getFilename(link, url))}`);
+        $(el).attr(`${tags[tag]}`, `${path.join(getFilesDirectoryPath(url), getFilename(link, baseUrl))}`);
         links.push(link);
       }
     })
@@ -73,6 +74,7 @@ export const getAbsoluteUrls = (links, url) => {
 };
 
 export const downloadResources = (links, resourcesPath, url) => {
+  console.log(url);
   log('downloading resources');
   return fs.mkdir(resourcesPath).then(() => {
     const promises = links.map((link) => {
@@ -84,7 +86,6 @@ export const downloadResources = (links, resourcesPath, url) => {
             url: link,
             responseType: 'arraybuffer',
           }).then((data) => {
-            console.log(data.filename);
             return fs.writeFile(path.join(resourcesPath, getFilename(link, url)), data.data);
           }),
       };
