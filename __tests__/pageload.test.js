@@ -24,7 +24,7 @@ test('HTML-page with resources', async () => {
   await pageLoader('https://ru.hexlet.io/my', distPath);
   const page = await fs.lstat(path.join(distPath, 'ru-hexlet-io-my.html'));
   const resourcesFolder = await fs.lstat(path.join(distPath, 'ru-hexlet-io-my_files'));
-  const downloadedImg = await fs.lstat(path.join(distPath, 'ru-hexlet-io-my_files', 'ru-hexlet-io-my-img.svg'));
+  const downloadedImg = await fs.lstat(path.join(distPath, 'ru-hexlet-io-my_files', 'ru-hexlet-io-img.svg'));
 
   expect(scope.isDone()).toBe(true);
   expect(page.isFile()).toBe(true);

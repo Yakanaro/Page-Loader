@@ -57,10 +57,17 @@ const buildName = (link) => {
   return fileName;
 };
 
+// const buildAssetName = (rootAddress, link) => {
+//   const newUrl = createFileName(rootAddress);
+//   const { dir, name, ext } = path.parse(link);
+//   const assetNameWithExtName = `${newUrl}-${name}`.concat(ext || '.html');
+//   return assetNameWithExtName;
+// };
+
 const buildAssetName = (rootAddress, link) => {
-  const newUrl = createFileName(rootAddress);
   const { dir, name, ext } = path.parse(link);
-  const assetNameWithExtName = `${newUrl}-${name}`.concat(ext || '.html');
+  const assetNameWithoutExtName = buildName(new URL(`${dir}/${name}`, rootAddress));
+  const assetNameWithExtName = assetNameWithoutExtName.concat(ext || '.html');
   return assetNameWithExtName;
 };
 
