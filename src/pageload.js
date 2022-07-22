@@ -10,6 +10,6 @@ const pageLoader = (url, destinationFolder) => {
     .then((html) => getLinksAndChangeHtml(html, url))
     .then(({ links, newHtml }) => fs.writeFile(htmlPath, newHtml).then(() => links))
     .then((links) => getAbsoluteUrls(links, url))
-    .then((urls) => downloadResources(urls, resourcesPath));
+    .then((urls) => downloadResources(urls, resourcesPath, url));
 };
 export default pageLoader;

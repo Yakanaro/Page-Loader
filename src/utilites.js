@@ -32,6 +32,16 @@ export const createFileName = (url) => {
   return parts;
 };
 
+const getFileName = (link) => {
+  const myUrl = new URL(link);
+  const fileName = link
+    .replace(`${myUrl.protocol}//`, '')
+    .replace(/\.\w+$/, '')
+    .replace(/[^a-z0-9]/gi, '-');
+  const format = path.extname(link);
+  return `${fileName}${format}`;
+};
+
 export const checkLocalLink = (link, url) => {
   const originalHost = new URL(url).origin;
   return new URL(link, originalHost).origin === originalHost;
@@ -46,11 +56,6 @@ export const getFilename = (url) => {
     .filter((el) => el !== '')
     .join('-');
   return filename === '' ? 'index.html' : filename;
-};
-
-export const makeFileName = (address) => {
-  const addUrl = url.parse(address);
-  return `${addUrl.host}${addUrl.path}`.replace(/\W/g, '-');
 };
 
 export const downloadHtml = (url, htmlPath) => axios.get(url).then((response) => fs.writeFile(htmlPath, response.data, 'utf-8'));
@@ -75,7 +80,7 @@ export const getAbsoluteUrls = (links, url) => {
   return links.map((link) => new URL(link, url).href);
 };
 
-export const downloadResources = (links, resourcesPath) => {
+export const downloadResources = (links, resourcesPath, url) => {
   log('downloading resources');
   return fs.mkdir(resourcesPath).then(() => {
     const promises = links.map((link) => {
@@ -87,7 +92,7 @@ export const downloadResources = (links, resourcesPath) => {
             url: link,
             responseType: 'arraybuffer',
           }).then((data) => {
-            return fs.writeFile(path.join(resourcesPath, getFilename(link)), data.data);
+            return fs.writeFile(path.join(resourcesPath, getFileName(link)), data.data);
           }),
       };
     });
