@@ -39,8 +39,6 @@ export const checkLocalLink = (link, url) => {
 
 export const getFilesDirectoryPath = (url) => `${createFileName(url)}_files`;
 
-const genResourceName = (url) => url.replace(/[^a-zA-Z0-9]/g, '-');
-
 export const getFilename = (resUrl, baseUrl) => {
   const { pathname } = new URL(resUrl, 'https://example.com');
   const filename = pathname
@@ -60,9 +58,9 @@ const buildName = (link) => {
 };
 
 const buildAssetName = (rootAddress, link) => {
+  const newUrl = createFileName(rootAddress);
   const { dir, name, ext } = path.parse(link);
-  const assetNameWithoutExtName = buildName(new URL(`${dir}/${name}`, rootAddress));
-  const assetNameWithExtName = assetNameWithoutExtName.concat(ext || '.html');
+  const assetNameWithExtName = `${newUrl}-${name}`.concat(ext || '.html');
   return assetNameWithExtName;
 };
 
@@ -71,7 +69,6 @@ export const downloadHtml = (url, htmlPath) => axios.get(url).then((response) =>
 export const getLinksAndChangeHtml = (html, url) => {
   log('parsing html for local links and transforming HTML-page');
   const links = [];
-  const baseUrl = createFileName(url);
   const $ = cheerio.load(html);
   Object.keys(tags).map((tag) =>
     $(tag).each((i, el) => {
@@ -90,7 +87,6 @@ export const getAbsoluteUrls = (links, url) => {
 };
 
 export const downloadResources = (links, resourcesPath, url) => {
-  console.log(url);
   log('downloading resources');
   return fs.mkdir(resourcesPath).then(() => {
     const promises = links.map((link) => {
@@ -102,7 +98,8 @@ export const downloadResources = (links, resourcesPath, url) => {
             url: link,
             responseType: 'arraybuffer',
           }).then((data) => {
-            return fs.writeFile(path.join(resourcesPath, getFilename(link, url)), data.data);
+            console.log(path.join(resourcesPath, buildAssetName(url, link)));
+            return fs.writeFile(path.join(resourcesPath, buildAssetName(url, link)), data.data);
           }),
       };
     });
