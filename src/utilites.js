@@ -50,6 +50,22 @@ export const getFilename = (resUrl, baseUrl) => {
   return filename === '' ? 'index.html' : `${createFileName(baseUrl)}-${filename}`;
 };
 
+const buildName = (link) => {
+  const { pathname, host } = new URL(link);
+  const fileName = `${host}${pathname}`
+    .split(/[^\w+]/gi)
+    .filter((el) => el !== '')
+    .join('-');
+  return fileName;
+};
+
+const buildAssetName = (rootAddress, link) => {
+  const { dir, name, ext } = path.parse(link);
+  const assetNameWithoutExtName = buildName(new URL(`${dir}/${name}`, rootAddress));
+  const assetNameWithExtName = assetNameWithoutExtName.concat(ext || '.html');
+  return assetNameWithExtName;
+};
+
 export const downloadHtml = (url, htmlPath) => axios.get(url).then((response) => fs.writeFile(htmlPath, response.data, 'utf-8'));
 
 export const getLinksAndChangeHtml = (html, url) => {
@@ -61,7 +77,7 @@ export const getLinksAndChangeHtml = (html, url) => {
     $(tag).each((i, el) => {
       const link = $(el).attr(tags[tag]);
       if (link && checkLocalLink(link, url)) {
-        $(el).attr(`${tags[tag]}`, `${path.join(getFilesDirectoryPath(url), getFilename(link, baseUrl))}`);
+        $(el).attr(`${tags[tag]}`, `${path.join(getFilesDirectoryPath(url), buildAssetName(url, link))}`);
         links.push(link);
       }
     })
