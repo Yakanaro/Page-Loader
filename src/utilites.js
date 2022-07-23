@@ -105,7 +105,6 @@ export const downloadResources = (links, resourcesPath, url) => {
             url: link,
             responseType: 'arraybuffer',
           }).then((data) => {
-            console.log(path.join(resourcesPath, buildAssetName(url, link)));
             return fs.writeFile(path.join(resourcesPath, buildAssetName(url, link)), data.data);
           }),
       };

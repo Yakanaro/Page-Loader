@@ -4,6 +4,7 @@ import { createFileName, getFilesDirectoryPath, downloadHtml, getLinksAndChangeH
 
 const pageLoader = (url, destinationFolder) => {
   const htmlPath = `${path.join(destinationFolder, createFileName(url))}.html`;
+  console.log(htmlPath);
   const resourcesPath = path.join(destinationFolder, getFilesDirectoryPath(url));
   return downloadHtml(url, htmlPath)
     .then(() => fs.readFile(htmlPath, 'utf-8'))
