@@ -67,7 +67,7 @@ const buildName = (link) => {
 const buildAssetName = (rootAddress, link) => {
   const { dir, name, ext } = path.parse(link);
   const assetNameWithoutExtName = buildName(new URL(`${dir}/${name}`, rootAddress));
-  const assetNameWithExtName = assetNameWithoutExtName.concat(ext || '.html');
+  const assetNameWithExtName = assetNameWithoutExtName.concat(ext);
   return assetNameWithExtName;
 };
 
