@@ -5,7 +5,6 @@ import * as cheerio from 'cheerio';
 import debug from 'debug';
 import axiosDebug from 'axios-debug-log';
 import Listr from 'listr';
-import url from 'url';
 
 axiosDebug({
   request(deb, config) {
@@ -47,22 +46,6 @@ export const getFilename = (resUrl, baseUrl) => {
     .join('-');
   return filename === '' ? 'index.html' : `${createFileName(baseUrl)}-${filename}`;
 };
-
-const buildName = (link) => {
-  const { pathname, host } = new URL(link);
-  const fileName = `${host}${pathname}`
-    .split(/[^\w+]/gi)
-    .filter((el) => el !== '')
-    .join('-');
-  return fileName;
-};
-
-// const buildAssetName = (rootAddress, link) => {
-//   const newUrl = createFileName(rootAddress);
-//   const { dir, name, ext } = path.parse(link);
-//   const assetNameWithExtName = `${newUrl}-${name}`.concat(ext || '.html');
-//   return assetNameWithExtName;
-// };
 
 const buildAssetName = (rootAddress, link) => {
   const { dir, name, ext } = path.parse(link);
