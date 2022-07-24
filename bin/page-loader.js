@@ -2,7 +2,7 @@
 
 import { program } from 'commander';
 import pageLoader from '../src/pageload.js';
-
+import process from 'process';
 // program
 //   .version('0.1.0')
 //   .arguments('<url>')
@@ -21,9 +21,8 @@ program
   .arguments('<url>')
   .description('web pages downloader')
   .option('-o, --output [type]', 'destination', process.cwd())
-  .action((url) => {
-    const { output } = program.opts();
-    pageLoader(url, output).catch((err) => {
+  .action((url, option) => {
+    pageLoader(url, option.output).catch((err) => {
       console.error(err.message);
       process.exit(1);
     });
