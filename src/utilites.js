@@ -31,6 +31,15 @@ export const createFileName = (url) => {
   return parts;
 };
 
+export const buildName = (link) => {
+  const { pathname, host } = new URL(link);
+  const fileName = `${host}${pathname}`
+    .split(/[^\w+]/gi)
+    .filter((el) => el !== '')
+    .join('-');
+  return fileName;
+};
+
 export const checkLocalLink = (link, url) => {
   const originalHost = new URL(url).origin;
   return new URL(link, originalHost).origin === originalHost;
