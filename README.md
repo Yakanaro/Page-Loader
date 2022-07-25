@@ -5,6 +5,8 @@
 <a href="https://codeclimate.com/github/Yakanaro/backend-project-lvl3/maintainability"><img src="https://api.codeclimate.com/v1/badges/44d36a972c39fe4a04b0/maintainability" /></a>
 <a href="https://codeclimate.com/github/Yakanaro/backend-project-lvl3/test_coverage"><img src="https://api.codeclimate.com/v1/badges/44d36a972c39fe4a04b0/test_coverage" /></a>
 
+Page-loader is a console package, that downloads html and general assets from requested page.
+
 ## Setup
 
 - Clone this repository
