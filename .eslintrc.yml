@@ -9,7 +9,6 @@ parserOptions:
 rules:
   no-console: 0
   comma-dangle: 0
-  object-curly-newline: 'off'
   import/extensions: # FIXME: remove when rule will be adjusted for new nodejs version
     - error
     - always

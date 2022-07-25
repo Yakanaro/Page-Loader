@@ -71,38 +71,30 @@ export const getLinksAndChangeHtml = (html, url) => {
   log('parsing html for local links and transforming HTML-page');
   const links = [];
   const $ = cheerio.load(html);
-  Object.keys(tags).map((tag) =>
-    $(tag).each((i, el) => {
-      const link = $(el).attr(tags[tag]);
-      if (link && checkLocalLink(link, url)) {
-        $(el).attr(`${tags[tag]}`, `${path.join(getFilesDirectoryPath(url), buildAssetName(url, link))}`);
-        links.push(link);
-      }
-    })
-  );
+  Object.keys(tags).map((tag) => $(tag).each((i, el) => {
+    const link = $(el).attr(tags[tag]);
+    if (link && checkLocalLink(link, url)) {
+      $(el).attr(`${tags[tag]}`, `${path.join(getFilesDirectoryPath(url), buildAssetName(url, link))}`);
+      links.push(link);
+    }
+  }));
   return { links, newHtml: $.html() };
 };
 
-export const getAbsoluteUrls = (links, url) => {
-  return links.map((link) => new URL(link, url).href);
-};
+export const getAbsoluteUrls = (links, url) => links.map((link) => new URL(link, url).href);
 
 export const downloadResources = (links, resourcesPath, url) => {
   log('downloading resources');
   return fs.mkdir(resourcesPath).then(() => {
-    const promises = links.map((link) => {
-      return {
-        title: `Downloading ${link}`,
-        task: () =>
-          axios({
-            method: 'get',
-            url: link,
-            responseType: 'arraybuffer',
-          }).then((data) => {
-            return fs.writeFile(path.join(resourcesPath, buildAssetName(url, link)), data.data);
-          }),
-      };
-    });
+    const promises = links.map((link) => ({
+      title: `Downloading ${link}`,
+      task: () => axios({
+        method: 'get',
+        url: link,
+        responseType: 'arraybuffer',
+      // eslint-disable-next-line max-len
+      }).then((data) => fs.writeFile(path.join(resourcesPath, buildAssetName(url, link)), data.data)),
+    }));
     return new Listr(promises, { concurrent: true, exitOnError: false }).run().catch((error) => ({ result: 'error', error }));
   });
 };
