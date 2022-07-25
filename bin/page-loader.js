@@ -1,9 +1,8 @@
 #!/usr/bin/env node
 
 // import { program } from 'commander';
-import pageLoader from '../src/pageload.js';
-
 import { Command } from 'commander';
+import pageLoader from '../src/pageload.js';
 
 // program
 //   .version('0.1.0')

@@ -1,14 +1,6 @@
 import { promises as fs } from 'fs';
 import path from 'path';
-import {
-  createFileName,
-  getFilesDirectoryPath,
-  downloadHtml,
-  getLinksAndChangeHtml,
-  getAbsoluteUrls,
-  downloadResources,
-  buildName,
-} from './utilites.js';
+import { downloadHtml, getLinksAndChangeHtml, getAbsoluteUrls, downloadResources, buildName } from './utilites.js';
 
 const pageLoader = (url, destinationFolder = process.cwd()) => {
   console.log(`${path.join(destinationFolder, buildName(url))}.html`);

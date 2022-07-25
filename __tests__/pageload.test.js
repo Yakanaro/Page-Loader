@@ -1,5 +1,4 @@
 import nock from 'nock';
-import debug from 'debug';
 import { fileURLToPath } from 'url';
 import os from 'os';
 import path from 'path';
