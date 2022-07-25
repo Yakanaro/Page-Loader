@@ -3,9 +3,8 @@ import path from 'path';
 import { createFileName, getFilesDirectoryPath, downloadHtml, getLinksAndChangeHtml, getAbsoluteUrls, downloadResources } from './utilites.js';
 
 const pageLoader = (url, destinationFolder = process.cwd()) => {
-  console.log(destinationFolder);
+  console.log(`${path.join(destinationFolder, createFileName(url))}.html`);
   const htmlPath = `${path.join(destinationFolder, createFileName(url))}.html`;
-  console.log(htmlPath);
   const resourcesPath = path.join(destinationFolder, getFilesDirectoryPath(url));
   return downloadHtml(url, htmlPath)
     .then(() => fs.readFile(htmlPath, 'utf-8'))
