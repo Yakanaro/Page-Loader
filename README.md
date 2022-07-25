@@ -13,4 +13,4 @@
 
 ## Example
 
-asc
+[![asciicast](https://asciinema.org/a/510828.svg)](https://asciinema.org/a/510828)

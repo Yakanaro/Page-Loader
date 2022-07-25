@@ -5,12 +5,8 @@ import {
 } from './utilites.js';
 
 const pageLoader = (url, destinationFolder = process.cwd()) => {
-  console.log(`${path.join(destinationFolder, buildName(url))}.html`);
-  // const htmlPath = `${path.join(destinationFolder, createFileName(url))}.html`;
   const htmlPath = `${path.join(destinationFolder, buildName(url))}.html`;
-  // const resourcesPath = path.join(destinationFolder, getFilesDirectoryPath(url));
   const resourcesPath = `${path.join(destinationFolder, buildName(url))}_files`;
-  console.log(resourcesPath);
   return downloadHtml(url, htmlPath)
     .then(() => fs.readFile(htmlPath, 'utf-8'))
     .then((html) => getLinksAndChangeHtml(html, url))

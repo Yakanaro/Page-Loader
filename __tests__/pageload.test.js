@@ -32,12 +32,12 @@ test('HTML-page with resources', async () => {
   expect(downloadedImg.isFile()).toBe(true);
 });
 
-test('Should generate 404 error', async () => {
+test('404 error', async () => {
   nock('https://abc.xyz').get('/a').reply(404);
   await expect(pageLoader('https://abc.xyz/a', distPath)).rejects.toThrow('Request failed with status code 404');
 });
 
-test('Should generate ENOENT error', async () => {
+test('ENOENT error', async () => {
   nock('https://example.com/').get('/a').reply(200, '<html></html');
   await expect(pageLoader('https://example.com/a', path.join(distPath, 'any'))).rejects.toThrow('ENOENT');
 });

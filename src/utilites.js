@@ -45,18 +45,7 @@ export const checkLocalLink = (link, url) => {
   return new URL(link, originalHost).origin === originalHost;
 };
 
-// export const getFilesDirectoryPath = (url) => `${createFileName(url)}_files`;
-
 export const getFilesDirectoryPath = (url) => `${buildName(url)}_files`;
-
-export const getFilename = (resUrl, baseUrl) => {
-  const { pathname } = new URL(resUrl, 'https://example.com');
-  const filename = pathname
-    .split('/')
-    .filter((el) => el !== '')
-    .join('-');
-  return filename === '' ? 'index.html' : `${createFileName(baseUrl)}-${filename}`;
-};
 
 const buildAssetName = (rootAddress, link) => {
   const { dir, name, ext } = path.parse(link);
