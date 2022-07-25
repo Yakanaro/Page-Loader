@@ -2,7 +2,7 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { createFileName, getFilesDirectoryPath, downloadHtml, getLinksAndChangeHtml, getAbsoluteUrls, downloadResources } from './utilites.js';
 
-const pageLoader = (url, destinationFolder) => {
+const pageLoader = (url, destinationFolder = process.cwd()) => {
   console.log(destinationFolder);
   const htmlPath = `${path.join(destinationFolder, createFileName(url))}.html`;
   console.log(htmlPath);
