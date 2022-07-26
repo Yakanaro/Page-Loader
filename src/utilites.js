@@ -23,14 +23,6 @@ const tags = {
   link: 'href',
 };
 
-export const createFileName = (url) => {
-  const parts = url
-    .replace('https://', '')
-    .replace(/[\W]{1}$/g, '')
-    .replace(/[\W]/g, '-');
-  return parts;
-};
-
 export const buildName = (link) => {
   const { pathname, host } = new URL(link);
   const fileName = `${host}${pathname}`
