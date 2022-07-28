@@ -64,6 +64,7 @@ export const downloadHtml = (url, htmlPath) => axios.get(url).then((response) =>
 // };
 
 export const getLinks = (html, url) => {
+  log('parsing html for local links');
   const links = [];
   const $ = cheerio.load(html);
   Object.keys(tags).forEach((tag) => $(tag).each((i, el) => {
@@ -77,14 +78,12 @@ export const getLinks = (html, url) => {
 };
 
 export const changeHtml = (html, url) => {
-  log('parsing html for local links and transforming HTML-page');
-  const links = [];
+  log('transforming HTML-page');
   const $ = cheerio.load(html);
   Object.keys(tags).forEach((tag) => $(tag).each((i, el) => {
     const link = $(el).attr(tags[tag]);
     if (link && checkLocalLink(link, url)) {
       $(el).attr(`${tags[tag]}`, `${path.join(getFilesDirectoryPath(url), buildAssetName(url, link))}`);
-      links.push(link);
     }
   }));
   return $.html();
