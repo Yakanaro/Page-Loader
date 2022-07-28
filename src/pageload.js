@@ -1,7 +1,7 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 import {
-  downloadHtml, getAbsoluteUrls, downloadResources, buildName, getLinks, changeHtml
+  downloadHtml, getAbsoluteUrls, downloadResources, buildName, getLinks, changeHtml,
 } from './utilites.js';
 
 // const pageLoader = (url, destinationFolder = process.cwd()) => {

@@ -21,25 +21,9 @@ beforeEach(async () => {
   expectedAfterChange = await fs.readFile(getFixturePath('expectedAfterChange.html'), 'utf-8');
 });
 
-// test('HTML-page with resources', async () => {
-//   const scope = nock('https://ru.hexlet.io').get('/my').reply(200, expected).get('/img.svg').reply(200, image);
-//   await pageLoader('https://ru.hexlet.io/my', distPath);
-//   const page = await fs.lstat(path.join(distPath, 'ru-hexlet-io-my.html'));
-//   const html = await fs.readFile(path.join(distPath, 'ru-hexlet-io-my.html'), 'utf-8');
-//   const resourcesFolder = await fs.lstat(path.join(distPath, 'ru-hexlet-io-my_files'));
-//   const downloadedImg = await fs.lstat(path.join(distPath, 'ru-hexlet-io-my_files', 'ru-hexlet-io-img.svg'));
-//   const downImg = await fs.readFile(path.join(distPath, 'ru-hexlet-io-my_files', 'ru-hexlet-io-img.svg'), 'utf-8');
-//   expect(html).toEqual(expectedAfterChange);
-//   expect(downImg).toEqual(image);
-//   expect(scope.isDone()).toBe(true);
-//   expect(page.isFile()).toBe(true);
-//   expect(resourcesFolder.isDirectory()).toBe(true);
-//   expect(downloadedImg.isFile()).toBe(true);
-// });
-
 test('HTML-page with resources', async () => {
   const scope = nock('https://ru.hexlet.io').get('/my').reply(200, expected).get('/img.svg')
-.reply(200, image);
+    .reply(200, image);
   await pageLoader('https://ru.hexlet.io/my', distPath);
   const html = await fs.readFile(path.join(distPath, 'ru-hexlet-io-my.html'), 'utf-8');
   const resourcesFolder = await fs.lstat(path.join(distPath, 'ru-hexlet-io-my_files'));
