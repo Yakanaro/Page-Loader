@@ -48,18 +48,46 @@ const buildAssetName = (rootAddress, link) => {
 
 export const downloadHtml = (url, htmlPath) => axios.get(url).then((response) => fs.writeFile(htmlPath, response.data, 'utf-8'));
 
-export const getLinksAndChangeHtml = (html, url) => {
-  log('parsing html for local links and transforming HTML-page');
+// export const getLinksAndChangeHtml = (html, url) => {
+//   log('parsing html for local links and transforming HTML-page');
+//   const links = [];
+//   const $ = cheerio.load(html);
+//   Object.keys(tags).forEach((tag) => $(tag).each((i, el) => {
+//     const link = $(el).attr(tags[tag]);
+//     if (link && checkLocalLink(link, url)) {
+// eslint-disable-next-line max-len
+//       $(el).attr(`${tags[tag]}`, `${path.join(getFilesDirectoryPath(url), buildAssetName(url, link))}`);
+//       links.push(link);
+//     }
+//   }));
+//   return { links, newHtml: $.html() };
+// };
+
+export const getLinks = (html, url) => {
   const links = [];
   const $ = cheerio.load(html);
-  Object.keys(tags).map((tag) => $(tag).each((i, el) => {
+  Object.keys(tags).forEach((tag) => $(tag).each((i, el) => {
     const link = $(el).attr(tags[tag]);
     if (link && checkLocalLink(link, url)) {
       $(el).attr(`${tags[tag]}`, `${path.join(getFilesDirectoryPath(url), buildAssetName(url, link))}`);
       links.push(link);
     }
   }));
-  return { links, newHtml: $.html() };
+  return links;
+};
+
+export const changeHtml = (html, url) => {
+  log('parsing html for local links and transforming HTML-page');
+  const links = [];
+  const $ = cheerio.load(html);
+  Object.keys(tags).forEach((tag) => $(tag).each((i, el) => {
+    const link = $(el).attr(tags[tag]);
+    if (link && checkLocalLink(link, url)) {
+      $(el).attr(`${tags[tag]}`, `${path.join(getFilesDirectoryPath(url), buildAssetName(url, link))}`);
+      links.push(link);
+    }
+  }));
+  return $.html();
 };
 
 export const getAbsoluteUrls = (links, url) => links.map((link) => new URL(link, url).href);

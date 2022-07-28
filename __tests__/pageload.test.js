@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import nock from 'nock';
 import { fileURLToPath } from 'url';
 import os from 'os';
@@ -11,25 +12,42 @@ const getFixturePath = (filename) => path.join(__dirname, '__fixtures__', filena
 let expected;
 let distPath;
 let image;
+let expectedAfterChange;
 
 beforeEach(async () => {
   distPath = await fs.mkdtemp(path.join(os.tmpdir(), 'page-loader-'));
   expected = await fs.readFile(getFixturePath('expect.html'), 'utf-8');
   image = await fs.readFile(getFixturePath('img.svg'), 'utf-8');
+  expectedAfterChange = await fs.readFile(getFixturePath('expectedAfterChange.html'), 'utf-8');
 });
+
+// test('HTML-page with resources', async () => {
+//   const scope = nock('https://ru.hexlet.io').get('/my').reply(200, expected).get('/img.svg').reply(200, image);
+//   await pageLoader('https://ru.hexlet.io/my', distPath);
+//   const page = await fs.lstat(path.join(distPath, 'ru-hexlet-io-my.html'));
+//   const html = await fs.readFile(path.join(distPath, 'ru-hexlet-io-my.html'), 'utf-8');
+//   const resourcesFolder = await fs.lstat(path.join(distPath, 'ru-hexlet-io-my_files'));
+//   const downloadedImg = await fs.lstat(path.join(distPath, 'ru-hexlet-io-my_files', 'ru-hexlet-io-img.svg'));
+//   const downImg = await fs.readFile(path.join(distPath, 'ru-hexlet-io-my_files', 'ru-hexlet-io-img.svg'), 'utf-8');
+//   expect(html).toEqual(expectedAfterChange);
+//   expect(downImg).toEqual(image);
+//   expect(scope.isDone()).toBe(true);
+//   expect(page.isFile()).toBe(true);
+//   expect(resourcesFolder.isDirectory()).toBe(true);
+//   expect(downloadedImg.isFile()).toBe(true);
+// });
 
 test('HTML-page with resources', async () => {
   const scope = nock('https://ru.hexlet.io').get('/my').reply(200, expected).get('/img.svg')
-    .reply(200, image);
+.reply(200, image);
   await pageLoader('https://ru.hexlet.io/my', distPath);
-  const page = await fs.lstat(path.join(distPath, 'ru-hexlet-io-my.html'));
+  const html = await fs.readFile(path.join(distPath, 'ru-hexlet-io-my.html'), 'utf-8');
   const resourcesFolder = await fs.lstat(path.join(distPath, 'ru-hexlet-io-my_files'));
-  const downloadedImg = await fs.lstat(path.join(distPath, 'ru-hexlet-io-my_files', 'ru-hexlet-io-img.svg'));
-
+  const downloadedImg = await fs.readFile(path.join(distPath, 'ru-hexlet-io-my_files', 'ru-hexlet-io-img.svg'), 'utf-8');
+  expect(html).toEqual(expectedAfterChange);
+  expect(downloadedImg).toEqual(image);
   expect(scope.isDone()).toBe(true);
-  expect(page.isFile()).toBe(true);
   expect(resourcesFolder.isDirectory()).toBe(true);
-  expect(downloadedImg.isFile()).toBe(true);
 });
 
 test('404 error', async () => {
